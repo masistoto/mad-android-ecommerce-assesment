@@ -1,0 +1,11 @@
+query Product($uid: String!){
+    product(uid: $uid){
+        ...ProductFragment
+    }
+    globalCms: getWidgetAll(page: PDP_PAGE) {
+        ...CmsFragment
+    }
+    localCms: getWidgetAll(page: CONFIGURABLE_PRODUCT_PAGE, products: $uid) {
+        ...CmsFragment
+    }
+}

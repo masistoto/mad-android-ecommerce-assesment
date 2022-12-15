@@ -1,0 +1,12 @@
+fragment CmsFragment on Widget {
+  storefront_properties {
+    sort_order
+    type
+    layout_updates {
+      container
+    }
+  }
+  widget_options {
+    block_id
+  }
+}

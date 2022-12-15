@@ -1,0 +1,5 @@
+#query GetSortsAndFilter($sort: ProductAttributeSortInput, $filter: ProductAttributeFilterInput) {
+#    products(filter: $filter, sort: $sort){
+#        ...SortAndFilterFragment
+#    }
+#}

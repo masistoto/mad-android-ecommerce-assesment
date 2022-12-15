@@ -1,0 +1,12 @@
+fragment Variants on ConfigurableProduct {
+  variants{
+    attributes {
+      code
+      label
+      uid
+    }
+    product{
+      sku
+    }
+  }
+}

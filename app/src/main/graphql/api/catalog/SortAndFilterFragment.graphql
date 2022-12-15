@@ -1,0 +1,25 @@
+#fragment SortAndFilterFragment on Products {
+#    aggregations {
+#        label
+#        attribute_code
+#        options {
+#            count
+#            label
+#            value
+#        }
+#    }
+#    colour_swatch_group {
+#        colour_group_display
+#        colour_group_name
+#        colour_group_value
+#    }
+#    sort_fields {
+#        default
+#        options {
+#            label
+#            value
+#        }
+#    }
+#    total_count
+#}
+#

@@ -1,0 +1,83 @@
+fragment CustomizableOptionsFragment on CustomizableProductInterface {
+    options {
+        option_id
+        required
+        sortOrder: sort_order
+        title
+        ... on CustomizableAreaOption {
+            areaValue: value {
+                maxCharacters: max_characters
+                price
+                priceType: price_type
+                sku
+            }
+        }
+        ... on CustomizableDateOption {
+            dateValue: value {
+                price
+                priceType: price_type
+                sku
+            }
+        }
+        ... on CustomizableDropDownOption {
+            dropdownValues: value {
+                optionTypeId: option_type_id
+                price
+                priceType: price_type
+                sku
+                sortOrder: sort_order
+                title
+            }
+        }
+        ... on CustomizableMultipleOption {
+            multiValues: value {
+                optionTypeId: option_type_id
+                price
+                priceType: price_type
+                sku
+                sortOrder: sort_order
+                title
+            }
+        }
+        ... on CustomizableFieldOption {
+            fieldValue: value {
+                maxCharacters: max_characters
+                price
+                priceType: price_type
+                sku
+            }
+        }
+        ... on CustomizableFileOption {
+            fileValue: value {
+                fileExtension: file_extension
+                imageSizeX: image_size_x
+                imageSizeY: image_size_y
+                price
+                priceType: price_type
+                sku
+            }
+        }
+        ... on CustomizableRadioOption {
+            radioValues: value {
+                uid
+                optionTypeId: option_type_id
+                price
+                priceType: price_type
+                sku
+                sortOrder: sort_order
+                title
+            }
+        }
+        ... on CustomizableCheckboxOption {
+            checkboxValues: value {
+                uid
+                optionTypeId: option_type_id
+                price
+                priceType: price_type
+                sku
+                sortOrder: sort_order
+                title
+            }
+        }
+    }
+}

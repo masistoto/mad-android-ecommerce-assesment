@@ -1,0 +1,30 @@
+fragment PriceRangeFragment on PriceRange {
+    minimum_price {
+        discount {
+            amount_off
+            percent_off
+        }
+        final_price {
+            currency
+            value
+        }
+        regular_price {
+            currency
+            value
+        }
+    }
+    maximum_price {
+        discount {
+            amount_off
+            percent_off
+        }
+        final_price {
+            currency
+            value
+        }
+        regular_price {
+            currency
+            value
+        }
+    }
+}

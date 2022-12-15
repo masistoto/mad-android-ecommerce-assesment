@@ -1,0 +1,9 @@
+fragment CustomizableFieldValue on CustomizableFieldOption {
+    value {
+        max_characters
+        price
+        price_type
+        sku
+        uid
+    }
+}

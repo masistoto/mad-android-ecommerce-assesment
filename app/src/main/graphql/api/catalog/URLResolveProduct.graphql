@@ -1,0 +1,11 @@
+query URLResolveProduct($urlKey: String!) {
+    route(url: $urlKey) {
+        type
+        ... on ConfigurableProduct{
+            uid
+        }
+        ... on CategoryTree{
+            uid
+        }
+    }
+}

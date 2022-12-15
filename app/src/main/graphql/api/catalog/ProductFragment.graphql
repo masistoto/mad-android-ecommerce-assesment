@@ -1,0 +1,89 @@
+fragment ProductFragment on ProductInterface {
+    uid
+    sku
+    name
+    description {
+        html
+    }
+    ...ProductListFragment
+    ... on ConfigurableProduct {
+        ...ProductListFragment
+        ... on CustomizableProductInterface {
+            options {
+                option_id
+                required
+                sort_order
+                title
+                ... on CustomizableCheckboxOption {
+                    value {
+                        option_type_id
+                        price
+                        sku
+                        title
+                        uid
+                    }
+                }
+            }
+        }
+        configurable_options {
+            attribute_code
+            label
+            position
+            values {
+                uid
+                label
+            }
+        }
+        variants {
+            product {
+                scene_seven_image_url
+                stock_status
+                sku
+                price_range {
+                    ...PriceRangeFragment
+                }
+            }
+            attributes {
+                code
+                value_index
+                label
+                uid
+            }
+        }
+    }
+    ... on GiftCardProduct {
+        message_max_length
+        allow_open_amount
+        open_amount_min
+        open_amount_max
+        is_returnable
+        giftcard_type
+        giftcard_amounts {
+            website_id
+            value
+            attribute_id
+            website_value
+        }
+        gift_card_options {
+            uid
+            required
+            sort_order
+            title
+            ...CustomizableFieldValue
+        }
+        ...CustomizableOptionsFragment
+    }
+
+    crosssell_products {
+        name
+        ...ProductListFragment
+    }
+    related_products {
+        name
+        ...ProductListFragment
+    }
+    upsell_products {
+        name
+        ...ProductListFragment
+    }
+}

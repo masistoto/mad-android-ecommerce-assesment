@@ -1,0 +1,77 @@
+query Category(
+    $categoryUid: String!
+    $pageSize: Int!
+    $currentPage: Int!
+    $filter: ProductAttributeFilterInput!
+    $sort: ProductAttributeSortInput
+) {
+    categoryList(filters: { category_uid: { eq: $categoryUid } }) {
+        uid
+        name
+        product_count
+        breadcrumbs {
+            category_uid
+            category_name
+            category_level
+        }
+        category_min_max_price {
+            category_price_min
+            category_price_max
+            currency_symbol
+        }
+    }
+    products(
+        filter: $filter
+        sort: $sort
+        pageSize: $pageSize
+        currentPage: $currentPage
+    ) {
+        total_count
+        page_info {
+            current_page
+            page_size
+            total_pages
+        }
+        aggregations {
+            label
+            attribute_code
+            options {
+                count
+                label
+                value
+            }
+        }
+        multiselection_aggregations {
+            label
+            attribute_code
+            options {
+                count
+                label
+                value
+            }
+        }
+        colour_swatch_group {
+            colour_group_display
+            colour_group_name
+            colour_group_value
+        }
+        sort_fields {
+            default
+            options {
+                label
+                value
+            }
+        }
+        items {
+            name
+            ...ProductListFragment
+            ...Variants
+        }
+    }
+    globalCms: getWidgetAll(page: PLP_PAGE) {
+        ...CmsFragment
+    }
+    localCms: getWidgetAll(page: ANCHOR_CATEGORY, categories: $categoryUid) {
+        ...CmsFragment
+    }
+}

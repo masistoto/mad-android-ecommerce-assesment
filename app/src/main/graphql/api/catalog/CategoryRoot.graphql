@@ -1,0 +1,38 @@
+query CategoryRoot {
+    categoryList {
+        name
+        uid
+        product_count
+        children_count
+        children {
+            name
+            uid
+            product_count
+            children_count
+            children {
+                name
+                uid
+                product_count
+                children_count
+                children {
+                    name
+                    uid
+                    product_count
+                    children_count
+                }
+            }
+            category_min_max_price {
+                category_price_min
+                category_price_max
+                currency_symbol
+            }
+        }
+        category_min_max_price {
+            category_price_min
+            category_price_max
+            currency_symbol
+        }
+    }
+}
+
+

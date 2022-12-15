@@ -1,0 +1,21 @@
+fragment ProductListFragment on ProductInterface {
+  product_url
+  additional_attributes {
+    code
+    value
+    label
+  }
+  mp_label_data {
+    label
+    label_image
+  }
+  name
+  stock_status
+  brand
+  uid
+  sku
+  #   configurable_product_swatch_cluster
+  price_range {
+    ...PriceRangeFragment
+  }
+}

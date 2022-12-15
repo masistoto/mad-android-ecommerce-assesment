@@ -1,0 +1,30 @@
+query CategoryList($uid : String!){
+  categoryList(filters: {category_uid: {eq: $uid}}){
+    name
+    uid
+    children_count
+    product_count
+    level
+    position
+    include_in_menu
+    children {
+      name
+      uid
+      children_count
+      product_count
+      level
+      position
+      include_in_menu
+      category_min_max_price {
+        category_price_min
+        category_price_max
+        currency_symbol
+      }
+    }
+    category_min_max_price {
+      category_price_min
+      category_price_max
+      currency_symbol
+    }
+  }
+}
