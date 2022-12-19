@@ -17,7 +17,7 @@ The basic `MainActivity.kt` currently contains a lifecycle method that will fetc
 ### Specification
 The assessment requires two features be delivered:
 1. A Product Listing Page (PLP) which will scroll and perform paging. The maximum page size to be used with the API is 20. 
-2. A Product Detail Page (PDP) which will be navigated to after tapping a product in the PLP. This PDP will show a large image, name, price, description and a simple quantity increase/decrease function. 
+2. ~~A Product Detail Page (PDP) which will be navigated to after tapping a product in the PLP. This PDP will show a large image, name, price, description and a simple quantity increase/decrease function.~~
 
 The designs for the given project can be found in this [Figma Diagram](https://www.figma.com/file/DmC626VVpC1sR4SHIUdezX/PLP?node-id=0%3A1)
 
