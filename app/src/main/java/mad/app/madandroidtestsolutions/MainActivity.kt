@@ -3,6 +3,8 @@ package mad.app.madandroidtestsolutions
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.setContent
+import androidx.compose.material3.Text
 import androidx.lifecycle.lifecycleScope
 import mad.app.madandroidtestsolutions.service.ApiService
 
@@ -12,7 +14,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         lifecycleScope.launchWhenResumed {
 
@@ -65,6 +66,10 @@ class MainActivity : AppCompatActivity() {
                         "R${firstProduct?.productFragment?.productListFragment?.price_range?.priceRangeFragment?.minimum_price?.final_price?.value}"
             )
 
+        }
+
+        setContent {
+            Text("Hello World")
         }
     }
 }
