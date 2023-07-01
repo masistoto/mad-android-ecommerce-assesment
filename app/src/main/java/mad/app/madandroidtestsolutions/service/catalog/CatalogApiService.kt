@@ -1,19 +1,20 @@
 package mad.app.madandroidtestsolutions.service.catalog
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import kotlinx.coroutines.flow.*
+import mad.app.madandroidtestsolutions.service.ApiService
 import mad.app.plptest.CategoryQuery
 import mad.app.plptest.CategoryRootQuery
 import mad.app.plptest.ProductQuery
 import mad.app.plptest.type.FilterEqualTypeInput
 import mad.app.plptest.type.ProductAttributeFilterInput
+import javax.inject.Inject
 
-class CatalogApiService(val apolloClient: ApolloClient) : ICatalogApiService {
+class CatalogApiService @Inject constructor (private val apiService: ApiService) : ICatalogApiService {
 
     override suspend fun fetchRootCategory(): CategoryRootQuery.CategoryList? {
-        return apolloClient.query(CategoryRootQuery())
+        return apiService.getApolloClient().query(CategoryRootQuery())
             .toFlow()
             .map {
                 it.data?.categoryList?.firstOrNull()
@@ -26,7 +27,7 @@ class CatalogApiService(val apolloClient: ApolloClient) : ICatalogApiService {
         pageNumber: Int,
         pageSize: Int
     ): Flow<ApolloResponse<CategoryQuery.Data>> {
-        return apolloClient.query(
+        return apiService.getApolloClient().query(
             CategoryQuery(
                 categoryUid = uuid,
                 pageSize = pageSize,
@@ -59,7 +60,7 @@ class CatalogApiService(val apolloClient: ApolloClient) : ICatalogApiService {
     }
 
     override suspend fun getProduct(productUid: String): ProductQuery.Product? {
-        return apolloClient.query(ProductQuery(uid = productUid))
+        return apiService.getApolloClient().query(ProductQuery(uid = productUid))
             .toFlow()
             .map {
                 it?.data?.product
