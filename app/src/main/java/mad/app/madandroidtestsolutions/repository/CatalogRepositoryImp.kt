@@ -20,7 +20,7 @@ class CatalogRepositoryImp @Inject constructor(
         pageNumber: Int,
         pageSize: Int
     ): ApolloResponse<CategoryQuery.Data> {
-        TODO("Not yet implemented")
+        return catalogApiService.getCategory(categoryId = categoryId)
     }
 
     override suspend fun getProductsForCategory(

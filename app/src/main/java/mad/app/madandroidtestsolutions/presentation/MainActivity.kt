@@ -93,7 +93,9 @@ fun Navigation() {
 
         // Main Screen
         composable("main_screen") {
-            MainScreen()
+            MainScreen() { productId ->
+                //navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/${productId}")
+            }
         }
     }
 }
