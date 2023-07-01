@@ -22,6 +22,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,7 +40,6 @@ import mad.app.madandroidtestsolutions.R
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                rootCategoriesState: LazyListState = rememberLazyListState(),
-               //productsForCategoryState: LazyListState = rememberLazyListState(),
                onItemClick: (String) -> Unit
 ) {
 
@@ -147,5 +148,52 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
             }
         }
     }
+    Spacer(modifier = Modifier.height(8.dp))
+
+    // TODO Pagination button checks and logic
+    BottomButtons(
+        onPrevClick = {
+            // --pageNumber
+            // pageSize - 20
+        },
+        onNextClick = {
+            // ++pageNumber
+            // pageSize + 20
+        }
+    )
 }
 
+@Composable
+fun BottomButtons(onPrevClick: () -> Unit, onNextClick: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Button(
+                onClick = { onPrevClick() },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White)
+            ) {
+                Text(text = "<< Prev")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(
+                onClick = { onNextClick() },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White)
+            ) {
+                Text(text = "Next>>")
+            }
+        }
+    }
+}
