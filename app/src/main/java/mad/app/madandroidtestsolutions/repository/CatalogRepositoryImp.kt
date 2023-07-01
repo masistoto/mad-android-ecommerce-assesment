@@ -12,7 +12,7 @@ class CatalogRepositoryImp @Inject constructor(
 ) : CatalogRepository {
 
     override suspend fun fetchRootCategory(): CategoryRootQuery.CategoryList? {
-        TODO("Not yet implemented")
+        return catalogApiService.fetchRootCategory()
     }
 
     override suspend fun getCategory(
