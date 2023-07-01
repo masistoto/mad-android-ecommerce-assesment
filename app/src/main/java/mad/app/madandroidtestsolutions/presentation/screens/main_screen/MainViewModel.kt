@@ -12,13 +12,15 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import mad.app.madandroidtestsolutions.domain.Resource
+import mad.app.madandroidtestsolutions.domain.usecase.GetProductDetailUseCase
 import mad.app.madandroidtestsolutions.domain.usecase.GetProductsForCategoryUseCase
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.ProductsCategoryState
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getRootCategoryUseCase : GetRootCategoryUseCase,
-    private val getProductsForCategoryUseCase: GetProductsForCategoryUseCase
+    private val getProductsForCategoryUseCase: GetProductsForCategoryUseCase,
+    //private val getProductDetailUseCase: GetProductDetailUseCase
 ) : ViewModel() {
 
     private val _rootCategoriesState = mutableStateOf(RootCategoriesState())

@@ -23,7 +23,6 @@ class CatalogRepositoryImp @Inject constructor(
     }
 
     override suspend fun getProductDetail(productUid: String): ProductQuery.Product? {
-        TODO("Not yet implemented")
+        return catalogApiService.getProduct(productUid)
     }
-
 }

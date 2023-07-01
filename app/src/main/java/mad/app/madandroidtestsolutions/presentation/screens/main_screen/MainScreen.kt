@@ -38,7 +38,7 @@ import mad.app.madandroidtestsolutions.R
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                rootCategoriesState: LazyListState = rememberLazyListState(),
-               productsForCategoryState: LazyListState = rememberLazyListState(),
+               //productsForCategoryState: LazyListState = rememberLazyListState(),
                onItemClick: (String) -> Unit
 ) {
 
@@ -97,7 +97,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                                 .padding(10.dp)
                                 .clickable {
                                     _productsForCategoryState.productsForCategory.items[it].let { item -> item?.productListFragment?.uid }
-                                        ?.let { it1 -> onItemClick(it1) }
+                                        ?.let { productUid -> onItemClick(productUid) }
                                 },
                             contentAlignment = Alignment.Center
                         ) {

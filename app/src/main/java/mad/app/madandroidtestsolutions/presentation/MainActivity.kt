@@ -2,6 +2,7 @@ package mad.app.madandroidtestsolutions.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -15,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import mad.app.madandroidtestsolutions.presentation.screens.SplashScreen
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.MainScreen
+import mad.app.madandroidtestsolutions.presentation.screens.product_detail_screen.ProductDetailScreen
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -82,19 +84,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController,
             startDestination = "splash_screen") {
+
+        // Splash Screen
         composable("splash_screen") {
             SplashScreen(navController = navController)
         }
 
         // Main Screen
         composable("main_screen") {
-            MainScreen() { productId ->
-                //navHostController.navigate(DetailScreen.ProductDetailScreen.route + "/${productId}")
+            MainScreen() { productUid ->
+                navController.navigate("product_detail_screen" + "/${productUid}")
+            }
+        }
+
+        // product detail screen
+        composable("product_detail_screen/{productUid}") {
+            ProductDetailScreen() {
+                navController.popBackStack()
             }
         }
     }

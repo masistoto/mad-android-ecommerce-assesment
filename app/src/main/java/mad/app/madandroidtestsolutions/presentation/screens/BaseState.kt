@@ -1,4 +1,4 @@
-package mad.app.madandroidtestsolutions.presentation.screens.main_screen.states
+package mad.app.madandroidtestsolutions.presentation.screens
 
 abstract class BaseState{
     abstract var isLoading: Boolean
