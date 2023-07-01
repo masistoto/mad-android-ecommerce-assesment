@@ -3,8 +3,6 @@ package mad.app.madandroidtestsolutions.presentation.screens.main_screen
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import mad.app.madandroidtestsolutions.domain.usecase.GetCategoryUseCase
-import mad.app.madandroidtestsolutions.domain.usecase.GetProductsForCategoryUseCase
 import mad.app.madandroidtestsolutions.domain.usecase.GetRootCategoryUseCase
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.RootCategoriesState
 import javax.inject.Inject
@@ -21,7 +19,7 @@ class MainViewModel @Inject constructor(
     //private val getProductsForCategoryUseCase: GetProductsForCategoryUseCase
 ) : ViewModel() {
 
-    private val _state = mutableStateOf<RootCategoriesState>(RootCategoriesState())
+    private val _state = mutableStateOf(RootCategoriesState())
     val rootCategoriesState: State<RootCategoriesState> = _state
 
     init {
@@ -35,7 +33,7 @@ class MainViewModel @Inject constructor(
                     _state.value = RootCategoriesState(isLoading = true)
                 }
                 is Resource.Success -> {
-                    _state.value = RootCategoriesState(rootCategories = result.data)
+                    _state.value = RootCategoriesState(rootCategories = result.data?.children)
                 }
                 is Resource.Error -> {
                     _state.value =
