@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListState
@@ -22,13 +22,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,12 +38,12 @@ import mad.app.madandroidtestsolutions.R
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                rootCategoriesState: LazyListState = rememberLazyListState(),
-               categoriesState: LazyListState = rememberLazyListState(),
+               productsForCategoryState: LazyListState = rememberLazyListState(),
                onItemClick: (String) -> Unit
 ) {
 
     val _rootCategoriesState = mainViewModel.rootCategoriesState.value
-    val _categoriesState = mainViewModel.categoriesState.value
+    val _productsForCategoryState = mainViewModel.productsForCategoryState.value
 
     Column(
         modifier = Modifier
@@ -68,7 +66,10 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             modifier = Modifier
-                                .clickable { _rootCategoriesState.rootCategories[it]?.uid }
+                                .clickable { _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
+                                    mainViewModel.fetchProductsForCategory(
+                                        categoryId, 1 ,20)
+                                } }
                         )
                     }
                     Spacer(modifier = Modifier.heightIn(15.dp).widthIn(15.dp))
@@ -81,35 +82,48 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         // VERTICAL CATEGORIES PRODUCTS
 
         LazyVerticalGrid(
-            //state = categoriesState,
             columns = GridCells.Fixed(2),
-            //horizontalArrangement = Arrangement.spacedBy(10.dp),
-            //verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxSize(),
+            //contentPadding = PaddingValues(12.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            _categoriesState.categories?.size?.let {
+            _productsForCategoryState.productsForCategory?.items?.size?.let {
                 items(it) {
 
                     Column {
                         Box(
                             modifier = Modifier
-                                .size(150.dp)
-                                .background(Color.LightGray, shape = RoundedCornerShape(10.dp))
-                                .clip(RoundedCornerShape(10.dp))
+                                .padding(10.dp)
                                 .clickable {
-                                    _categoriesState.categories[it].let { item -> item?.productListFragment?.uid }
+                                    _productsForCategoryState.productsForCategory.items[it].let { item -> item?.productListFragment?.uid }
                                         ?.let { it1 -> onItemClick(it1) }
                                 },
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
+                                modifier = Modifier
+                                    .height(240.dp)
+                                    .aspectRatio(1f, false)
+                                    .background(color = Color.LightGray),
+                                alignment = Alignment.Center,
                                 painter = painterResource(R.drawable.ic_launcher_background),
-                                contentDescription = ""
+                                contentDescription = _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand
                             )
                         }
-                        _categoriesState.categories[it]?.productListFragment?.name?.let { it1 ->
+                        _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.name?.let { it1 ->
                             Text(
                                 text = it1,
-                                maxLines = 2,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.width(150.dp)
+                            )
+                        }
+
+                        _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand?.let { it1 ->
+                            Text(
+                                text = it1,
+                                maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.width(150.dp)
                             )
@@ -122,9 +136,10 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "add price",
+                                text = "R" + _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.price_range?.priceRangeFragment?.maximum_price?.final_price?.value,
                                 fontWeight = FontWeight(600),
-                                color = Color.Black
+                                color = Color.Black,
+                                modifier = Modifier.width(150.dp)
                             )
                         }
                     }

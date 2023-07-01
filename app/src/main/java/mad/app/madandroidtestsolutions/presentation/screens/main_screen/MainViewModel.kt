@@ -12,21 +12,20 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import mad.app.madandroidtestsolutions.domain.Resource
-import mad.app.madandroidtestsolutions.domain.usecase.GetCategoryUseCase
-import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.CategoriesState
+import mad.app.madandroidtestsolutions.domain.usecase.GetProductsForCategoryUseCase
+import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.ProductsCategoryState
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getRootCategoryUseCase : GetRootCategoryUseCase,
-    private val getCategoryUseCase: GetCategoryUseCase,
-    //private val getProductsForCategoryUseCase: GetProductsForCategoryUseCase
+    private val getProductsForCategoryUseCase: GetProductsForCategoryUseCase
 ) : ViewModel() {
 
     private val _rootCategoriesState = mutableStateOf(RootCategoriesState())
     val rootCategoriesState: State<RootCategoriesState> = _rootCategoriesState
 
-    private val _categoriesState = mutableStateOf(CategoriesState())
-    val categoriesState: State<CategoriesState> = _categoriesState
+    private val _productsForCategoryState = mutableStateOf(ProductsCategoryState())
+    val productsForCategoryState: State<ProductsCategoryState> = _productsForCategoryState
 
     init {
         fetchRootCategories()
@@ -41,7 +40,7 @@ class MainViewModel @Inject constructor(
                 is Resource.Success -> {
                     _rootCategoriesState.value = RootCategoriesState(rootCategories = result.data?.children)
                     val firstCategoryId = result.data?.children?.firstOrNull()?.uid // whichever is the first, store could be for women/kids only
-                    firstCategoryId?.let { categoryId -> fetchCategories(categoryId)}
+                    firstCategoryId?.let { categoryId -> fetchProductsForCategory(categoryId, 1, 20)} // initial call
                 }
                 is Resource.Error -> {
                     _rootCategoriesState.value =
@@ -51,27 +50,19 @@ class MainViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun fetchCategories(categoryId: String){
-        getCategoryUseCase(categoryId).onEach { result ->
+    fun fetchProductsForCategory(categoryId: String, pageNumber: Int, pageSize: Int){ // called by pagination, keep/maintain on screen? figure out later
+        // TODO pageNo and size will come from pagination
+        getProductsForCategoryUseCase(categoryId, pageNumber, pageSize).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    _categoriesState.value = CategoriesState(isLoading = true)
+                    _productsForCategoryState.value = ProductsCategoryState(isLoading = true)
                 }
                 is Resource.Success -> {
-                    _categoriesState.value = CategoriesState(categories = result.data?.data?.products?.items ?: emptyList())
-                    Log.d("CatalogExample",
-                "The first page of mens category with CatId has these products:\n" +
-                        "${
-                            result.data?.data?.products?.items
-                                ?.map {
-                                    "${it?.name} (uid: ${it?.productListFragment?.uid}) and SKU ${it?.productListFragment?.sku}"
-                                }
-                                ?.joinToString(separator = "\n")
-                        }")
+                    _productsForCategoryState.value = ProductsCategoryState(productsForCategory = result.data)
                 }
                 is Resource.Error -> {
-                    _categoriesState.value =
-                        CategoriesState(errorMessage = result.exception.message ?: "Unexpected error.")
+                    _productsForCategoryState.value =
+                        ProductsCategoryState(errorMessage = result.exception.message ?: "Unexpected error.")
                 }
             }
         }.launchIn(viewModelScope)
