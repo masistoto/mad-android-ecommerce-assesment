@@ -155,10 +155,14 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         onPrevClick = {
             // --pageNumber
             // pageSize - 20
+            mainViewModel.fetchProductsForCategory(
+                "MTEz", 1 ,20)
         },
         onNextClick = {
             // ++pageNumber
             // pageSize + 20
+            mainViewModel.fetchProductsForCategory(
+                "MTEz", 2 ,20)
         }
     )
 }
