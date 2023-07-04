@@ -1,6 +1,7 @@
 package mad.app.madandroidtestsolutions.presentation.screens.product_detail_screen
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,12 +24,15 @@ class ProductDetailViewModel @Inject constructor(
     private val _productDetailState = mutableStateOf(ProductDetailState())
     val productDetailState: State<ProductDetailState> = _productDetailState
 
+    private val _quantityCount = mutableStateOf(0)
+    val quantityCount: MutableState<Int> = _quantityCount
+
     init {
         val productUid = savedStateHandle.get<String>("productUid")
         if (productUid == null) {
             Log.e("productUid", "productUid empty, cannot get product details")
         } else {
-            fetchProductDetail(productUid) // TODO how to pass an argument on init?
+            fetchProductDetail(productUid)
         }
     }
 
@@ -47,5 +51,12 @@ class ProductDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun productMinusQuantity(){
+        _quantityCount.value.minus(1)
+    }
+    fun productAddQuantity(){
+        _quantityCount.value.plus(1)
     }
 }

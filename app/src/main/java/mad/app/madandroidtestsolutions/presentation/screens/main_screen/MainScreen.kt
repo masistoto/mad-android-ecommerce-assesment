@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mad.app.madandroidtestsolutions.R
+import mad.app.madandroidtestsolutions.common.Utils.Companion.combineCurrencyAmount
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
@@ -81,9 +82,6 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                                 .padding(5.dp)
                         )
                     }
-//                    Spacer(modifier = Modifier
-//                        .heightIn(15.dp)
-//                        .widthIn(15.dp))
                 }
             }
         }
@@ -91,7 +89,6 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         Spacer(modifier = Modifier.height(8.dp))
 
         // VERTICAL CATEGORIES PRODUCTS
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
@@ -151,7 +148,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
 
                             Text(
                                 modifier = Modifier.align(Alignment.Start),
-                                text = "R" + _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.price_range?.priceRangeFragment?.maximum_price?.final_price?.value,
+                                text = combineCurrencyAmount(_productsForCategoryState.productsForCategory.items[it]?.productListFragment?.price_range?.priceRangeFragment?.maximum_price?.final_price?.currency?.rawValue.toString(), _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.price_range?.priceRangeFragment?.maximum_price?.final_price?.value.toString()) ,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black,
                             )
