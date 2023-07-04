@@ -1,6 +1,7 @@
 package mad.app.madandroidtestsolutions.presentation.screens.main_screen
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,6 +9,8 @@ import mad.app.madandroidtestsolutions.domain.usecase.GetRootCategoryUseCase
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.RootCategoriesState
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,8 +32,45 @@ class MainViewModel @Inject constructor(
     private val _productsForCategoryState = mutableStateOf(ProductsCategoryState())
     val productsForCategoryState: State<ProductsCategoryState> = _productsForCategoryState
 
+    private val _prevPageState = MutableLiveData<Boolean>(true)
+    val prevPageState: LiveData<Boolean> = _prevPageState
+
+    private val _nextPageState = MutableLiveData<Boolean>(true)
+    val nextPageState: LiveData<Boolean> = _nextPageState
+
+    var pageNumber = 1
+    val pageSize = 20 // this does not change
+    private var totalNumberOfProductsForCategory = 0
+
     init {
         fetchRootCategories()
+    }
+
+    fun initPagination(){
+        pageNumber = 1
+        //pageSize = 20 // this does not change
+        _nextPageState.value = false
+    }
+
+    fun prevPagination(): Boolean{
+        if(pageNumber > 1)
+            pageNumber -= 1
+        //pageSize = 20 // this does not change
+        return true
+    }
+
+    fun nextPagination(): Boolean{
+
+        if(totalNumberOfProductsForCategory > 0) {
+            pageNumber += 1
+            totalNumberOfProductsForCategory -= pageSize
+
+            // grey and disable the button
+            _nextPageState.value = totalNumberOfProductsForCategory > 0
+            return true
+        }
+        //pageSize = 20 // this does not change
+        return false
     }
 
     private fun fetchRootCategories(){
@@ -42,7 +82,8 @@ class MainViewModel @Inject constructor(
                 is Resource.Success -> {
                     _rootCategoriesState.value = RootCategoriesState(rootCategories = result.data?.children)
                     val firstCategoryId = result.data?.children?.firstOrNull()?.uid // whichever is the first, store could be for women/kids only
-                    firstCategoryId?.let { categoryId -> fetchProductsForCategory(categoryId, 1, 20)} // initial call
+                    initPagination()
+                    firstCategoryId?.let { categoryId -> fetchProductsForCategory(categoryId, pageNumber, pageSize)} // initial call
                 }
                 is Resource.Error -> {
                     _rootCategoriesState.value =
@@ -61,6 +102,10 @@ class MainViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     _productsForCategoryState.value = ProductsCategoryState(productsForCategory = result.data)
+                    if(pageNumber == 1 && productsForCategoryState.value.productsForCategory != null) {
+                        totalNumberOfProductsForCategory =
+                            _productsForCategoryState.value.productsForCategory!!.total_count!!
+                    }
                 }
                 is Resource.Error -> {
                     _productsForCategoryState.value =

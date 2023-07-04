@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import mad.app.madandroidtestsolutions.R
 
 @Composable
@@ -68,12 +69,15 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .clickable { _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
+                                    mainViewModel.initPagination()
                                     mainViewModel.fetchProductsForCategory(
-                                        categoryId, 1 ,20)
+                                        categoryId, mainViewModel.pageNumber ,mainViewModel.pageSize)
                                 } }
                         )
                     }
-                    Spacer(modifier = Modifier.heightIn(15.dp).widthIn(15.dp))
+                    Spacer(modifier = Modifier
+                        .heightIn(15.dp)
+                        .widthIn(15.dp))
                 }
             }
         }
@@ -97,7 +101,8 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             modifier = Modifier
                                 .padding(10.dp)
                                 .clickable {
-                                    _productsForCategoryState.productsForCategory.items[it].let { item -> item?.productListFragment?.uid }
+                                    _productsForCategoryState.productsForCategory.items[it]
+                                        .let { item -> item?.productListFragment?.uid }
                                         ?.let { productUid -> onItemClick(productUid) }
                                 },
                             contentAlignment = Alignment.Center
@@ -108,7 +113,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                                     .aspectRatio(1f, false)
                                     .background(color = Color.LightGray),
                                 alignment = Alignment.Center,
-                                painter = painterResource(R.drawable.ic_launcher_background),
+                                painter = painterResource(R.drawable.product_dress),
                                 contentDescription = _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand
                             )
                         }
@@ -153,20 +158,25 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
     // TODO Pagination button checks and logic
     BottomButtons(
         onPrevClick = {
-            // --pageNumber
-            // pageSize - 20
-            mainViewModel.fetchProductsForCategory(
-                "MTEz", 1 ,20)
+            if(mainViewModel.prevPagination()) {
+                mainViewModel.fetchProductsForCategory(
+                    "MTEz", 1, 20
+                )
+            }
+            else{
+                // update UI
+            }
         },
         onNextClick = {
-            // ++pageNumber
-            // pageSize + 20
-            mainViewModel.fetchProductsForCategory(
-                "MTEz", 2 ,20)
+            if(mainViewModel.nextPagination()) {
+                mainViewModel.fetchProductsForCategory(
+                    "MTEz", 2, 20
+                )
+            }
+
         }
     )
 }
-
 @Composable
 fun BottomButtons(onPrevClick: () -> Unit, onNextClick: () -> Unit) {
     Column(
