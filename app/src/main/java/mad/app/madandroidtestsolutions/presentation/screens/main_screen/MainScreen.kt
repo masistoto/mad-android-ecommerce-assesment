@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -29,13 +29,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import mad.app.madandroidtestsolutions.R
 
 @Composable
@@ -50,14 +51,14 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 15.dp, end = 15.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 10.dp)
     )
     {
         // HORIZONTAL ROOT CATEGORIES
         LazyRow(
             state = rootCategoriesState,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            contentPadding = PaddingValues(horizontal = 5.dp)
         ) {
             _rootCategoriesState.rootCategories?.size?.let { it ->
                 items(it) {
@@ -66,18 +67,23 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             text = it1,
                             color = Color.Black,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             modifier = Modifier
                                 .clickable { _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
                                     mainViewModel.initPagination()
                                     mainViewModel.fetchProductsForCategory(
                                         categoryId, mainViewModel.pageNumber ,mainViewModel.pageSize)
                                 } }
+                                .background(
+                                    color = Color.LightGray,
+                                    shape = RoundedCornerShape(5.dp))
+                                .clip(RoundedCornerShape(5.dp))
+                                .padding(5.dp)
                         )
                     }
-                    Spacer(modifier = Modifier
-                        .heightIn(15.dp)
-                        .widthIn(15.dp))
+//                    Spacer(modifier = Modifier
+//                        .heightIn(15.dp)
+//                        .widthIn(15.dp))
                 }
             }
         }
@@ -99,7 +105,6 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                     Column {
                         Box(
                             modifier = Modifier
-                                .padding(10.dp)
                                 .clickable {
                                     _productsForCategoryState.productsForCategory.items[it]
                                         .let { item -> item?.productListFragment?.uid }
@@ -110,42 +115,45 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             Image(
                                 modifier = Modifier
                                     .height(240.dp)
-                                    .aspectRatio(1f, false)
-                                    .background(color = Color.LightGray),
-                                alignment = Alignment.Center,
+                                    .fillMaxSize()
+                                    .background(color = Color.White),
+                                contentScale = ContentScale.Crop,
                                 painter = painterResource(R.drawable.product_dress),
                                 contentDescription = _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand
                             )
                         }
-                        _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.name?.let { it1 ->
-                            Text(
-                                text = it1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.width(150.dp)
-                            )
-                        }
-
-                        _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand?.let { it1 ->
-                            Text(
-                                text = it1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.width(150.dp)
-                            )
-                        }
-
-                        Row(
+                        Column(
                             modifier = Modifier
-                                .width(150.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
+                                .fillMaxWidth()
+                                .padding(5.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.name?.let { it1 ->
+                                Text(
+                                    modifier = Modifier.align(Alignment.Start),
+                                    text = it1,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.brand?.let { it1 ->
+                                Text(
+                                    modifier = Modifier.align(Alignment.Start),
+                                    text = it1,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 10.sp,
+                                    color = Color.LightGray
+                                )
+                            }
+
                             Text(
+                                modifier = Modifier.align(Alignment.Start),
                                 text = "R" + _productsForCategoryState.productsForCategory.items[it]?.productListFragment?.price_range?.priceRangeFragment?.maximum_price?.final_price?.value,
-                                fontWeight = FontWeight(600),
+                                fontWeight = FontWeight.Bold,
                                 color = Color.Black,
-                                modifier = Modifier.width(150.dp)
                             )
                         }
                     }
@@ -153,6 +161,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
             }
         }
     }
+
     Spacer(modifier = Modifier.height(8.dp))
 
     // TODO Pagination button checks and logic
