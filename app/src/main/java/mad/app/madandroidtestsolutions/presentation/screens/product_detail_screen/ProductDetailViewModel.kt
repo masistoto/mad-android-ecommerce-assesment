@@ -1,5 +1,6 @@
 package mad.app.madandroidtestsolutions.presentation.screens.product_detail_screen
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,18 +11,25 @@ import mad.app.madandroidtestsolutions.domain.Resource
 import mad.app.madandroidtestsolutions.domain.usecase.GetProductDetailUseCase
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import androidx.lifecycle.SavedStateHandle
 import mad.app.madandroidtestsolutions.presentation.screens.product_detail_screen.states.ProductDetailState
 
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
-    private val getProductDetailUseCase: GetProductDetailUseCase
+    private val getProductDetailUseCase: GetProductDetailUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _productDetailState = mutableStateOf(ProductDetailState())
     val productDetailState: State<ProductDetailState> = _productDetailState
 
     init {
-        fetchProductDetail("MTIwOTIzMQ==") // TODO how to pass an argument on init?
+        val productUid = savedStateHandle.get<String>("productUid")
+        if (productUid == null) {
+            Log.e("productUid", "productUid empty, cannot get product details")
+        } else {
+            fetchProductDetail(productUid) // TODO how to pass an argument on init?
+        }
     }
 
     private fun fetchProductDetail(productUid: String){
