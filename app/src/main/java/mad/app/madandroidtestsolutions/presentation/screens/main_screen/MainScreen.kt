@@ -179,7 +179,6 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                     "MTEz", 2, 20
                 )
             }
-
         }
     )
 }

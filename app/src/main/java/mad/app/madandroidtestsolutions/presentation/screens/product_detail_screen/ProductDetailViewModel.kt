@@ -12,6 +12,7 @@ import mad.app.madandroidtestsolutions.domain.Resource
 import mad.app.madandroidtestsolutions.domain.usecase.GetProductDetailUseCase
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
 import mad.app.madandroidtestsolutions.presentation.screens.product_detail_screen.states.ProductDetailState
 
@@ -23,9 +24,6 @@ class ProductDetailViewModel @Inject constructor(
 
     private val _productDetailState = mutableStateOf(ProductDetailState())
     val productDetailState: State<ProductDetailState> = _productDetailState
-
-    private val _quantityCount = mutableStateOf(0)
-    val quantityCount: MutableState<Int> = _quantityCount
 
     init {
         val productUid = savedStateHandle.get<String>("productUid")
@@ -51,12 +49,5 @@ class ProductDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun productMinusQuantity(){
-        _quantityCount.value.minus(1)
-    }
-    fun productAddQuantity(){
-        _quantityCount.value.plus(1)
     }
 }
