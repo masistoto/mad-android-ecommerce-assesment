@@ -41,11 +41,11 @@ class ProductDetailViewModel @Inject constructor(
                     _productDetailState.value = ProductDetailState(isLoading = true)
                 }
                 is Resource.Success -> {
-                    _productDetailState.value = ProductDetailState(productDetail = result.data)
+                    _productDetailState.value = ProductDetailState(productDetail = result.data, isLoading = false)
                 }
                 is Resource.Error -> {
                     _productDetailState.value =
-                        ProductDetailState(errorMessage = result.exception.message ?: "Unexpected error.")
+                        ProductDetailState(errorMessage = result.exception.message ?: "Unexpected error.", isLoading = false)
                 }
             }
         }.launchIn(viewModelScope)

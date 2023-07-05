@@ -24,12 +24,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -40,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mad.app.madandroidtestsolutions.R
 import mad.app.madandroidtestsolutions.common.Utils.Companion.combineCurrencyAmount
+import mad.app.madandroidtestsolutions.presentation.screens.LoadingSpinnerProgressBar
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
@@ -49,6 +48,9 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
 
     val _rootCategoriesState = mainViewModel.rootCategoriesState.value
     val _productsForCategoryState = mainViewModel.productsForCategoryState.value
+    val _productPaginateState = mainViewModel.productPaginateState.value
+
+    LoadingSpinnerProgressBar(_rootCategoriesState.isLoading || _productsForCategoryState.isLoading)
 
     Column(
         modifier = Modifier
@@ -75,7 +77,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                                     mainViewModel.initPagination()
                                     _productsForCategoryState.selectedProductCategory = categoryId
                                     mainViewModel.fetchProductsForCategory(
-                                        categoryId, mainViewModel.pageNumber ,mainViewModel.pageSize)
+                                        categoryId, _productPaginateState.currentPage ,mainViewModel.pageSize)
                                 } }
                                 .background(
                                     color = Color.LightGray,
@@ -164,26 +166,43 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
     Spacer(modifier = Modifier.height(8.dp))
 
     // TODO Pagination button checks and logic
-    BottomButtons(
-        onPrevClick = {
-            if(mainViewModel.prevPagination()) {
-                mainViewModel.fetchProductsForCategory(
-                    _productsForCategoryState.selectedProductCategory, 1, 20
-                )
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Button(
+                onClick = { mainViewModel.prevPagination() },
+                modifier = Modifier
+                    .weight(1f)
+                    .alpha(if (_productPaginateState.showPrevButton) 1f else 0f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White)
+            ) {
+                Text(text = "<< Prev")
             }
-            else{
-                // update UI
-            }
-        },
-        onNextClick = {
-            if(mainViewModel.nextPagination()) {
-                mainViewModel.fetchProductsForCategory(
-                    _productsForCategoryState.selectedProductCategory, 2, 20
-                )
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(
+                onClick = { mainViewModel.nextPagination() },
+                modifier = Modifier
+                    .weight(1f)
+                    .alpha(if (_productPaginateState.showNextButton) 1f else 0f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White)
+            ) {
+                Text(text = "Next>>")
             }
         }
-    )
+    }
 }
+
 @Composable
 fun BottomButtons(onPrevClick: () -> Unit, onNextClick: () -> Unit) {
     Column(

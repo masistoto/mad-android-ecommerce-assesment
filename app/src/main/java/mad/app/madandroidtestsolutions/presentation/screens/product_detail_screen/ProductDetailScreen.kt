@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import mad.app.madandroidtestsolutions.R
 import mad.app.madandroidtestsolutions.common.Utils.Companion.combineCurrencyAmount
+import mad.app.madandroidtestsolutions.presentation.screens.LoadingSpinnerProgressBar
 import kotlin.math.roundToInt
 
 @Composable
@@ -45,10 +47,12 @@ fun ProductDetailScreen(
     viewModel: ProductDetailViewModel = hiltViewModel(),
     popBack: () -> Unit // Navigate back to MainScreen
 ) {
-
     val state = viewModel.productDetailState.value
 
+    LoadingSpinnerProgressBar(state.isLoading)
+
     if (state.productDetail != null){
+        state.isLoading = false
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
