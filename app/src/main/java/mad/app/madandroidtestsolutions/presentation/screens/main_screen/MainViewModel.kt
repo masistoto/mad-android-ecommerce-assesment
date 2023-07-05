@@ -1,7 +1,5 @@
 package mad.app.madandroidtestsolutions.presentation.screens.main_screen
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +13,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import mad.app.madandroidtestsolutions.domain.Resource
-import mad.app.madandroidtestsolutions.domain.usecase.GetProductDetailUseCase
 import mad.app.madandroidtestsolutions.domain.usecase.GetProductsForCategoryUseCase
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.ProductsCategoryState
 
@@ -32,10 +29,10 @@ class MainViewModel @Inject constructor(
     private val _productsForCategoryState = mutableStateOf(ProductsCategoryState())
     val productsForCategoryState: State<ProductsCategoryState> = _productsForCategoryState
 
-    private val _prevPageState = MutableLiveData<Boolean>(true)
+    private val _prevPageState = MutableLiveData(true)
     val prevPageState: LiveData<Boolean> = _prevPageState
 
-    private val _nextPageState = MutableLiveData<Boolean>(true)
+    private val _nextPageState = MutableLiveData(true)
     val nextPageState: LiveData<Boolean> = _nextPageState
 
     var pageNumber = 1
@@ -61,16 +58,19 @@ class MainViewModel @Inject constructor(
 
     fun nextPagination(): Boolean{
 
-        if(totalNumberOfProductsForCategory > 0) {
-            pageNumber += 1
-            totalNumberOfProductsForCategory -= pageSize
 
-            // grey and disable the button
-            _nextPageState.value = totalNumberOfProductsForCategory > 0
-            return true
-        }
-        //pageSize = 20 // this does not change
-        return false
+        return true
+
+//        if(totalNumberOfProductsForCategory > 0) {
+//            pageNumber += 1
+//            totalNumberOfProductsForCategory -= pageSize
+//
+//            // grey and disable the button
+//            _nextPageState.value = totalNumberOfProductsForCategory > 0
+//            return true
+//        }
+//        //pageSize = 20 // this does not change
+//        return false
     }
 
     private fun fetchRootCategories(){
@@ -102,6 +102,7 @@ class MainViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     _productsForCategoryState.value = ProductsCategoryState(productsForCategory = result.data)
+                    _productsForCategoryState.value.selectedProductCategory = categoryId
                     if(pageNumber == 1 && productsForCategoryState.value.productsForCategory != null) {
                         totalNumberOfProductsForCategory =
                             _productsForCategoryState.value.productsForCategory!!.total_count!!

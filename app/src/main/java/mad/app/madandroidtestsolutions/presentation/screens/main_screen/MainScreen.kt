@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -26,6 +24,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
@@ -72,6 +73,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
                             modifier = Modifier
                                 .clickable { _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
                                     mainViewModel.initPagination()
+                                    _productsForCategoryState.selectedProductCategory = categoryId
                                     mainViewModel.fetchProductsForCategory(
                                         categoryId, mainViewModel.pageNumber ,mainViewModel.pageSize)
                                 } }
@@ -166,7 +168,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         onPrevClick = {
             if(mainViewModel.prevPagination()) {
                 mainViewModel.fetchProductsForCategory(
-                    "MTEz", 1, 20
+                    _productsForCategoryState.selectedProductCategory, 1, 20
                 )
             }
             else{
@@ -176,7 +178,7 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         onNextClick = {
             if(mainViewModel.nextPagination()) {
                 mainViewModel.fetchProductsForCategory(
-                    "MTEz", 2, 20
+                    _productsForCategoryState.selectedProductCategory, 2, 20
                 )
             }
         }
