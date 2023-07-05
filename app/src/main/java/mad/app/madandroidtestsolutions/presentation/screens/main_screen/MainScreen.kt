@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -65,27 +66,39 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
             contentPadding = PaddingValues(horizontal = 5.dp)
         ) {
             _rootCategoriesState.rootCategories?.size?.let { it ->
-                items(it) {
-                    _rootCategoriesState.rootCategories[it]?.name?.let { it1 ->
-                        Text(
-                            text = it1,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .clickable { _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
-                                    mainViewModel.initPagination()
-                                    _productsForCategoryState.selectedProductCategory = categoryId
-                                    mainViewModel.fetchProductsForCategory(
-                                        categoryId, _productPaginateState.currentPage ,mainViewModel.pageSize)
-                                } }
-                                .background(
-                                    color = Color.LightGray,
-                                    shape = RoundedCornerShape(5.dp))
-                                .clip(RoundedCornerShape(5.dp))
-                                .padding(5.dp)
-                        )
+                if(it > 0) {
+                    items(it) {
+                        _rootCategoriesState.rootCategories[it]?.name?.let { it1 ->
+                            Text(
+                                text = it1,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .clickable {
+                                        _rootCategoriesState.rootCategories[it]?.uid?.let { categoryId ->
+                                            mainViewModel.initPagination()
+                                            _productsForCategoryState.selectedProductCategory =
+                                                categoryId
+                                            mainViewModel.fetchProductsForCategory(
+                                                categoryId,
+                                                _productPaginateState.currentPage,
+                                                mainViewModel.pageSize
+                                            )
+                                        }
+                                    }
+                                    .background(
+                                        color = if (_productsForCategoryState.selectedProductCategory == _rootCategoriesState.rootCategories[it]?.uid) Color.Gray else Color.LightGray,
+                                        shape = RoundedCornerShape(5.dp)
+                                    )
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .padding(5.dp)
+                            )
+                        }
                     }
+                }
+                else{ // no products for this category
+
                 }
             }
         }
@@ -100,9 +113,8 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            _productsForCategoryState.productsForCategory?.items?.size?.let {
+            _productsForCategoryState.productsForCategory?.items?.size?.let { it ->
                 items(it) {
-
                     Column {
                         Box(
                             modifier = Modifier
@@ -163,9 +175,10 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
         }
     }
 
+    NoProductItemsText(_productsForCategoryState.productsForCategory?.items?.size == 0)
+
     Spacer(modifier = Modifier.height(8.dp))
 
-    // TODO Pagination button checks and logic
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -199,6 +212,25 @@ fun MainScreen(mainViewModel: MainViewModel = hiltViewModel(),
             ) {
                 Text(text = "Next>>")
             }
+        }
+    }
+}
+
+@Composable
+fun NoProductItemsText(isShowing: Boolean) {
+    if (isShowing) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 60.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "No products for selected category :( ",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+            )
         }
     }
 }

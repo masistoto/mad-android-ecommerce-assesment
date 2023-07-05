@@ -7,8 +7,6 @@ import mad.app.madandroidtestsolutions.domain.usecase.GetRootCategoryUseCase
 import mad.app.madandroidtestsolutions.presentation.screens.main_screen.states.RootCategoriesState
 import javax.inject.Inject
 import androidx.compose.runtime.State
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -38,6 +36,7 @@ class MainViewModel @Inject constructor(
 
     init {
         fetchRootCategories()
+        hideShowPaginateButtons()
     }
 
     fun initPagination(){
